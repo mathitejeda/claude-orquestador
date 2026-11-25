@@ -11,15 +11,17 @@ Tarea del usuario: $ARGUMENTS
 
 ## Reglas de quota (no negociables)
 
-- **Siempre** pasá `model` explícito al lanzar un subagente. Nunca dejes que herede el modelo de la sesión.
-- Agentes y modelos de este plugin:
-  | Agente | Modelo | Para qué |
+- **El modelo de cada agente vive en un solo lugar: el campo `model:` de su archivo en `agents/`.** Al lanzar un agente de este plugin **no pases `model`**: si lo pasás, pisás esa configuración y el usuario no puede cambiarla.
+- Roles de este plugin (el modelo concreto es el del archivo del agente; no lo asumas):
+  | Agente | Rol de costo | Para qué |
   |---|---|---|
-  | `orquestador:explorer` | haiku | buscar, leer, resumir |
-  | `orquestador:implementer` | sonnet | una tarea acotada + verificación |
-  | `orquestador:reviewer` | opus | una revisión final del diff |
+  | `orquestador:explorer` | barato | buscar, leer, resumir |
+  | `orquestador:implementer` | medio | una tarea acotada + verificación |
+  | `orquestador:reviewer` | caro | una revisión final del diff |
   Si el nombre con prefijo no existe, usá el nombre sin prefijo (`explorer`, etc.).
-- Opus en subagentes: **solo** el reviewer final, o algo que el usuario apruebe explícitamente en el plan.
+- **Fallback**: si ninguno de los dos existe y tenés que usar otro agente (uno genérico, de exploración, etc.), ahí **sí** pasá `model` explícito con el que figura en el archivo del agente equivalente de este plugin, para no heredar el modelo de la sesión. Si no podés leerlo, usá el más barato disponible para leer y el intermedio para implementar.
+- Si en la sesión hay herramientas o agentes nuevos que hacen mejor un rol (p. ej. un agente de exploración nativo más barato), podés proponerlos en el plan, pero no los uses sin que el usuario los apruebe.
+- Agentes de rol caro: **solo** el reviewer final, o algo que el usuario apruebe explícitamente en el plan.
 - Presupuesto por defecto: máx. **3 explorers**, **4 implementers**, **1 reviewer**. Pasarlo requiere pedirle permiso al usuario.
 - Si una pregunta se responde con un `grep` o leyendo un archivo, hacelo vos. No lances un agente para eso.
 
@@ -27,6 +29,9 @@ Tarea del usuario: $ARGUMENTS
 
 Leé `memoria.md` (en la carpeta de esta skill) para los formatos y reglas. Después:
 
+- Identificá el proyecto y anotá la hora de inicio (los vas a usar en la Fase 6):
+  `python3 "${CLAUDE_SKILL_DIR}/../../hooks/registrar.py" --id` y `date -Iseconds`.
+  Si el script no corre, usá el nombre de la carpeta del repo y `proyecto_id: null`.
 - Si existe `.claude/orquestador/aprendizajes.md` en el repo, leelo entero. Usalo en todas las fases: no preguntes ni explores lo que ya responde, tomá de ahí los comandos de verificación y ajustá el plan según `Calibración`.
 - Si no existe, seguí normal; se crea en la Fase 6.
 
@@ -57,13 +62,13 @@ Objetivo: ...
 Criterios de aceptación: ...
 
 Tareas:
-1. [implementer · sonnet] <qué hacer> — archivos: a.go, b.go — verifica: <comando>
-2. [implementer · sonnet] ... — archivos: c.go — depende de: 1
+1. [implementer] <qué hacer> — archivos: a.go, b.go — verifica: <comando>
+2. [implementer] ... — archivos: c.go — depende de: 1
 3. ...
-R. [reviewer · opus] revisión final del diff
+R. [reviewer] revisión final del diff
 
 Paralelismo: 1 y 3 en paralelo (archivos distintos); 2 después de 1.
-Presupuesto: 3 implementers sonnet, 1 reviewer opus.
+Presupuesto: 3 implementers, 1 reviewer (modelos: los de agents/*.md).
 Riesgos / decisiones abiertas: ...
 ```
 
@@ -89,7 +94,7 @@ Reglas del plan:
 4. Reporte final al usuario:
    - Qué se hizo, contra los criterios de aceptación (✓ / ✗).
    - Resultado real de tests (si fallan, decilo con el error).
-   - Agentes usados por modelo (ej. `2 haiku · 3 sonnet · 1 opus`).
+   - Agentes usados por modelo (ej. `2 haiku · 3 sonnet · 1 opus`), tomados de `eventos.jsonl` si está (ver Fase 6).
    - Pendientes o decisiones que quedaron abiertas.
 
 No hagas commit ni push salvo que el usuario lo pida.
@@ -108,4 +113,7 @@ Siempre, aunque la tarea haya salido perfecta. Es corta: no lances agentes para 
 2. **Proponé 0-3 cambios** a `.claude/orquestador/aprendizajes.md` como diff (agregar / reemplazar / borrar), cada uno con su origen. Aplicá las reglas de `memoria.md`: solo generalizables, sin duplicados, tope ~60 líneas. Cero es una respuesta válida; no rellenes.
 3. **Escribí solo lo que el usuario apruebe.** Si el archivo no existe, crealo con la plantilla de `memoria.md`.
 4. **Agregá una línea a `~/.claude/orquestador/historial.jsonl`** (esto no requiere aprobación: son métricas, sin contenido del proyecto). Creá la carpeta si no existe.
+   - Para `agentes`, `tokens` y `subagentes_registrados`, leé `~/.claude/orquestador/eventos.jsonl` y quedate con las líneas de este `proyecto_id` con `ts` ≥ la hora de inicio de la Fase 0. Contá por `familia` (agent_id únicos). Esos datos son reales; no los estimes.
+   - Si no hay eventos (hook desactivado o sin python), contá de la conversación y poné `subagentes_registrados: 0`.
+   - Si el conteo de eventos no coincide con los agentes que lanzaste, o algún `modelo` no es el esperado por el archivo del agente, anotalo en `nota`.
 5. Si el historial global ya tiene 10+ corridas y la última `/mejorar` fue hace más de 10, mencioná en una línea que se puede correr `/mejorar`.

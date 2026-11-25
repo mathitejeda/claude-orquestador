@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 — 2026-11-24
+
+Métricas confiables y modelos configurables en un solo lugar.
+
+- **Modelos**: las skills ya no pasan `model` a los agentes del plugin; manda el `model:` de `agents/*.md`. Antes la tabla de `orquestar` lo pisaba y cambiar el archivo no tenía efecto. `model` explícito solo en el fallback a agentes genéricos.
+- **Hook `SubagentStop`** (`hooks/registrar.py`): registra cada subagente del plugin en `~/.claude/orquestador/eventos.jsonl` con el modelo real, turnos, herramientas y tokens. La retro cuenta agentes desde ahí en lugar de estimarlos.
+- **`proyecto_id`**: hash del remote `origin` (o de la ruta si no hay remote). Distingue carpetas con el mismo nombre y une copias del mismo repo. `triage` y `mejorar` agrupan por id.
+- **Índice local** `config.json` → `proyectos`: `/mejorar` encuentra los `aprendizajes.md` sin asumir `~/dev/<proyecto>`.
+- `/mejorar` detecta agentes que corren con un modelo distinto al configurado y explorers demasiado caros.
+
 ## 0.4.0 — 2026-11-20
 
 Memoria y automejora.

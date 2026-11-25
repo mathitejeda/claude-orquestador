@@ -21,11 +21,11 @@ Entrada: $ARGUMENTS. Puede ser:
 
 **Calibración con memoria** (si existe):
 - `.claude/orquestador/aprendizajes.md` del repo → sección `Calibración` y `Trampas`.
-- `~/.claude/orquestador/historial.jsonl` → filtrá por `proyecto` igual al nombre de la carpeta del repo. Compará `tamaño_estimado` con lo que costó de verdad (`agentes`, `bloqueos`). Si las tareas "chicas" de este repo suelen necesitar más, ajustá tus estimaciones y decilo en una línea en la presentación.
+- `~/.claude/orquestador/historial.jsonl` → filtrá por `proyecto_id` del repo (`python3 "${CLAUDE_SKILL_DIR}/../../hooks/registrar.py" --id`); en líneas viejas sin `proyecto_id`, por `proyecto` igual al nombre de la carpeta. Compará `tamaño_estimado` con lo que costó de verdad (`agentes`, `bloqueos`). Si las tareas "chicas" de este repo suelen necesitar más, ajustá tus estimaciones y decilo en una línea en la presentación.
 
 - Agrupá los pendientes por zona del código (por título/cuerpo).
-- Por cada grupo con zona incierta, un `orquestador:explorer` con **model: haiku**, en paralelo, máximo **3 explorers en total**. Pedile por issue: archivos probablemente afectados, tamaño estimado y si el código ya resuelve parte o lo contradice.
-- Lo obvio, resolvelo vos con un grep. Nunca uses sonnet ni opus en esta fase.
+- Por cada grupo con zona incierta, un `orquestador:explorer` (sin pasar `model`: usa el de su archivo), en paralelo, máximo **3 explorers en total**. Pedile por issue: archivos probablemente afectados, tamaño estimado y si el código ya resuelve parte o lo contradice.
+- Lo obvio, resolvelo vos con un grep. En esta fase solo agentes de rol barato (explorer); si no existe, otro agente de lectura con el `model` explícito del archivo `agents/explorer.md`.
 
 ## 3. Clasificar
 

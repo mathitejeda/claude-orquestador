@@ -1,0 +1,16 @@
+{
+  "description": "Registra cada subagente del orquestador en ~/.claude/orquestador/eventos.jsonl (métricas, sin contenido del proyecto).",
+  "hooks": {
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/registrar.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

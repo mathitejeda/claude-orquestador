@@ -21,8 +21,11 @@ Formatos de memoria: leé `../orquestar/memoria.md`.
 ## 2. Juntar evidencia
 
 - `~/.claude/orquestador/historial.jsonl` completo.
+- `~/.claude/orquestador/eventos.jsonl` (un registro por subagente, escrito por el hook): modelo real, turnos, herramientas y tokens por agente.
 - `~/.claude/orquestador/mejoras.md` (corridas anteriores de esta skill: qué se cambió y cuándo).
-- Los `aprendizajes.md` de los proyectos que aparecen en el historial, si el usuario te dice dónde están o están en `~/dev/<proyecto>/.claude/orquestador/`. Si no los encontrás, seguí sin ellos.
+- Los `aprendizajes.md` de los proyectos del historial: buscá la ruta de cada `proyecto_id` en `config.json` → `proyectos` (`<ruta>/.claude/orquestador/aprendizajes.md`). Si no está en el índice, preguntale al usuario o seguí sin ese.
+
+**Agrupá por `proyecto_id`, no por nombre**: dos carpetas con el mismo nombre pueden ser proyectos distintos, y la misma copia con otro nombre (`app`, `app-187`) es el mismo proyecto. Líneas viejas sin `proyecto_id` agrupalas por nombre y decilo.
 
 **Mínimo de datos:** 5 corridas (o `--min N`). Con menos, mostrá un resumen de lo que hay y pará: con poca evidencia se sacan conclusiones de casos aislados.
 
@@ -37,7 +40,9 @@ Hacelo vos, sin agentes (es poco texto). Un patrón cuenta si aparece en **3+ co
 | el mismo **patrón evitable** del reviewer en varios proyectos | regla general en `agents/implementer.md` |
 | la misma convención/trampa en `aprendizajes.md` de 2+ proyectos | promoverla al agente o skill correspondiente |
 | `tamaño_estimado` sistemáticamente bajo | criterios de tamaño en `triage` |
-| `hallazgos_reviewer` en 0 casi siempre | considerar reviewer en sonnet para tareas chicas (ahorro de quota) |
+| `hallazgos_reviewer` en 0 casi siempre | considerar un modelo más barato en `agents/reviewer.md` para tareas chicas (ahorro de quota) |
+| en `eventos.jsonl`, un agente corre con un `modelo` distinto al de su archivo | algo pisa la configuración (prompt de una skill, env var): encontrarlo |
+| explorers con muchos `turnos`/`tokens_in` | preguntas demasiado amplias: regla en Fase 2 de `orquestar` |
 | `tests: sin_tests` frecuente | que `especificar` pregunte por verificación más temprano |
 
 También compará con `mejoras.md`: si un cambio anterior no movió la métrica que buscaba, proponé revertirlo.

@@ -15,7 +15,7 @@ Entrada: $ARGUMENTS (puede ser una idea suelta, un número de issue `#12`, una U
 
 - Si existe `.claude/orquestador/aprendizajes.md` en el repo, leelo primero: convenciones y trampas que la spec debería respetar o mencionar.
 - Si es un issue de GitHub: `gh issue view <n> --comments`.
-- Mirá el código relevante vos mismo con grep/lectura. Lanzá a lo sumo 1-2 `orquestador:explorer` (model: haiku) solo si la zona es grande o desconocida. Nunca otros modelos.
+- Mirá el código relevante vos mismo con grep/lectura. Lanzá a lo sumo 1-2 `orquestador:explorer` (sin pasar `model`: usa el de su archivo) solo si la zona es grande o desconocida. Ningún otro agente en esta skill.
 - Objetivo: llegar a la entrevista sabiendo cómo funciona hoy lo que se va a cambiar, para no preguntar cosas que el código responde.
 
 ## 2. Entrevista (estilo grill)

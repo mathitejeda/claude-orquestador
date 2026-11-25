@@ -27,6 +27,8 @@ Delegar en subagentes es potente, pero por defecto heredan el modelo más caro, 
 
 Agentes: `explorer` (haiku, solo lectura) · `implementer` (sonnet) · `reviewer` (opus, solo lectura).
 
+Hook: `SubagentStop` → `hooks/registrar.py` anota cada subagente del plugin (modelo real, turnos, tokens) en `~/.claude/orquestador/eventos.jsonl`. Requiere `python3`; sin él, el plugin funciona igual pero las métricas las estima la retro.
+
 ## Cómo aprende
 
 ```
@@ -81,13 +83,13 @@ Para que cualquier subagente sin modelo explícito no herede Opus, en `~/.claude
 
 ## Ajustar
 
-- Modelos por agente: campo `model:` en `agents/*.md`.
+- Modelos por agente: campo `model:` en `agents/*.md`. Es el **único** lugar: las skills no pasan `model` a los agentes del plugin, así que cambiarlo ahí alcanza (p. ej. cuando sale un modelo nuevo).
 - Presupuesto y flujo: `skills/orquestar/SKILL.md`.
 - Memoria: `skills/orquestar/memoria.md`.
 
 ## Próximos pasos
 
 - Evals con `claude plugin eval` para que `/mejorar` valide que un cambio no empeora nada antes de proponerlo.
-- Hook `SubagentStop` para registrar métricas de forma determinística en lugar de depender de la retro.
+- Arranque en frío de `/mejorar`: con 1-4 corridas, mostrar "qué aprendió" sin proponer cambios.
 
 Ver [CHANGELOG](CHANGELOG.md).

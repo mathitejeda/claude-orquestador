@@ -1,6 +1,6 @@
 {
   "name": "orquestador",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Triage de issues, especificación por entrevista y orquestación de subagentes con control de modelo y quota, que aprende de cada corrida y se automejora.",
   "author": {
     "name": "mathitejeda"
