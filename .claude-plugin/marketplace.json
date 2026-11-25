@@ -1,0 +1,14 @@
+{
+  "name": "claude-orquestador",
+  "description": "Plugins personales de mathitejeda para Claude Code.",
+  "owner": {
+    "name": "mathitejeda"
+  },
+  "plugins": [
+    {
+      "name": "orquestador",
+      "source": "./",
+      "description": "Orquestador de subagentes con control de modelo y quota."
+    }
+  ]
+}
